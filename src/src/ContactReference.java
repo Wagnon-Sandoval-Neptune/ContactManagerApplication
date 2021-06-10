@@ -9,6 +9,7 @@ public class ContactReference {
 
     public void readFile(Path pathToFile) throws IOException {
         List<String> contactsList = Files.readAllLines(pathToFile);
+        System.out.println("Your selection was '1' : Displaying all contacts \n");
 
         System.out.println("Name | Phone number \n---------------");
         for (String s : contactsList) {
@@ -16,12 +17,29 @@ public class ContactReference {
         }
     }
 
-    public void writeFile(String name, int number) throws IOException{
+    public String nameNumber(){
+        System.out.println("Your selection was '2' : Adding a new contact ");
+        Scanner addContact = new Scanner(System.in);
+        System.out.println("Enter the name of the contact you would like to add.");
+        String name = addContact.nextLine();
+        System.out.println("Enter the number of the contact you would like to add.");
+        int number = addContact.nextInt();
+        return name + " | " + number;
+    }
+
+    public void writeFile(String contact) throws IOException{
         Files.write(
                 Paths.get("src/src", "contacts.txt"),
-                Arrays.asList("\n" + name + " | " + number),
+                Arrays.asList("\n" + contact),
                 StandardOpenOption.APPEND
         );
+    }
+
+    public String searchString(){
+        System.out.println("Your selection was '3' : Search for a contact");
+        Scanner search = new Scanner(System.in);
+        System.out.println("Enter the name of the contact you would like to search for.");
+        return search.nextLine();
     }
 
     public void parseFile(Path pathToFile, String searchStr) throws IOException{
@@ -34,20 +52,13 @@ public class ContactReference {
         }
         System.out.println(newList);
 
-//        Scanner scan = new Scanner(pathToFile);
-//        while(scan.hasNext()){
-//            String line = scan.nextLine().toLowerCase().toString();
-//            if(line.contains(searchStr)){
-//                System.out.println(line);
-//            }
-//        }
     }
 
     public void deleteContact(Path pathToFile, String searchStr) throws IOException{
         List<String> lines = Files.readAllLines(pathToFile);
         List<String> newList = new ArrayList<>();
         for (String line : lines) {
-            if (line.contains(searchStr)) {
+            if (line.toLowerCase().contains(searchStr)) {
                 newList.add(" ");
                 continue;
             }
@@ -75,26 +86,13 @@ public class ContactReference {
 
             switch (option) {
                 case 1:
-                    System.out.println("Your selection was '1' : Displaying all contacts ");
                     contact.readFile(contactsPath);
                     break;
                 case 2:
-                    System.out.println("Your selection was '2' : Adding a new contact ");
-                    Scanner addContact = new Scanner(System.in);
-                    System.out.println("Enter the name of the contact you would like to add.");
-                    String name = addContact.nextLine();
-//                  System.out.println(name);
-                    System.out.println("Enter the number of the contact you would like to add.");
-                    int number = addContact.nextInt();
-//                  System.out.println(number);
-                    contact.writeFile(name, number);
+                    contact.writeFile(contact.nameNumber());
                     break;
                 case 3:
-                    System.out.println("Your selection was '3' : Search for a contact");
-                    Scanner search = new Scanner(System.in);
-                    System.out.println("Enter the name of the contact you would like to search for.");
-                    String searchString = search.nextLine();
-                    contact.parseFile(contactsPath, searchString);
+                    contact.parseFile(contactsPath, contact.searchString());
                     break;
                 case 4:
                     System.out.println("Your selection was '4' ");
