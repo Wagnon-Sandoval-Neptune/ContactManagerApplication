@@ -3,9 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ContactReference {
 
@@ -27,17 +25,46 @@ public class ContactReference {
     }
 
     public void parseFile(Path pathToFile, String searchStr) throws IOException{
-        Scanner scan = new Scanner(pathToFile);
-        while(scan.hasNext()){
-            String line = scan.nextLine().toLowerCase().toString();
-            if(line.contains(searchStr)){
-                System.out.println(line);
+        List<String> lines = Files.readAllLines(pathToFile);
+        List<String> newList = new ArrayList<>();
+        for (String line : lines) {
+            if (line.toLowerCase().contains(searchStr)) {
+                newList.add(line);
             }
         }
+        System.out.println(newList);
+
+//        Scanner scan = new Scanner(pathToFile);
+//        while(scan.hasNext()){
+//            String line = scan.nextLine().toLowerCase().toString();
+//            if(line.contains(searchStr)){
+//                System.out.println(line);
+//            }
+//        }
+    }
+
+    public void deleteContact(Path pathToFile, String searchStr) throws IOException{
+        List<String> lines = Files.readAllLines(pathToFile);
+        List<String> newList = new ArrayList<>();
+        for (String line : lines) {
+            if (line.contains(searchStr)) {
+                newList.add(" ");
+                continue;
+            }
+            newList.add(line);
+        }
+        Files.write(Paths.get("src/src", "contacts.txt"), newList);
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Welcome to the Contacts App! Please read the following options.");
+        System.out.println("Welcome to the Contacts App! Please read the following options.\n   " +
+                ",==.-------.\n" +
+                "  (    ) ====  \\\n" +
+                "  ||  | [][][] |\n" +
+                ",8||  | [][][] |\n" +
+                "8 ||  | [][][] |\n" +
+                "8 (    ) O O O /\n" +
+                "'88`=='-------' ");
         for (int x = 0; x < 1;) {
             Path contactsPath = Paths.get("src/src", "contacts.txt");
             ContactReference contact = new ContactReference();
@@ -56,10 +83,10 @@ public class ContactReference {
                     Scanner addContact = new Scanner(System.in);
                     System.out.println("Enter the name of the contact you would like to add.");
                     String name = addContact.nextLine();
-                    System.out.println(name);
+//                  System.out.println(name);
                     System.out.println("Enter the number of the contact you would like to add.");
                     int number = addContact.nextInt();
-                    System.out.println(number);
+//                  System.out.println(number);
                     contact.writeFile(name, number);
                     break;
                 case 3:
@@ -71,6 +98,11 @@ public class ContactReference {
                     break;
                 case 4:
                     System.out.println("Your selection was '4' ");
+                    Scanner delete = new Scanner(System.in);
+                    System.out.println("Enter the name of the contact you would like to search for.");
+                    String searchDelete = delete.nextLine();
+                    contact.deleteContact(contactsPath, searchDelete);
+                    break;
                 case 5:
                     System.out.println("Exiting Application");
                     x++;
